@@ -1,0 +1,112 @@
+.admissions-page {
+  padding-bottom: 100px;
+}
+
+.admission-process {
+  padding: 100px 0;
+}
+
+.process-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.process-step {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  padding: 30px;
+  background: var(--bg-main);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease;
+  border-left: 6px solid var(--accent);
+}
+
+.process-step:hover {
+  transform: translateX(10px);
+  background: #ffffff;
+  box-shadow: var(--shadow-premium);
+}
+
+.step-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  opacity: 0.2;
+}
+
+.step-content h4 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.step-content p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.eligibility-fees {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.eligibility-card, .enquiry-form-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-premium);
+}
+
+.eligibility-card h3, .enquiry-form-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 30px;
+  color: var(--primary);
+}
+
+.eligibility-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.eligibility-card li {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.eligibility-card li i {
+  color: var(--accent-hover);
+  margin-top: 4px;
+}
+
+.quick-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.quick-form input, .quick-form select {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e2e8f0;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.quick-form input:focus {
+  border-color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .eligibility-fees { grid-template-columns: 1fr; }
+  .process-step { flex-direction: column; text-align: center; }
+}

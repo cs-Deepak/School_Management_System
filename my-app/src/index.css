@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Premium School Color Palette */
+  --primary: #1e293b; /* Deep Navy Blue */
+  --primary-light: #334155;
+  --accent: #4ade80; /* Soft Accent Green */
+  --accent-hover: #22c55e;
+  --bg-main: #f8fafc; /* Crisp White/Slate tint */
+  --bg-card: #ffffff;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-light: #f1f5f9;
+  
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  
+  --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 20px 50px -15px rgba(0, 0, 0, 0.15);
+  
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 100px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--app-bg); /* Match the app background */
+  color: var(--text-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Elegant slow transition */
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: "Inter", sans-serif;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); /* Elegant slow transition */
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.glass-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(180, 200, 190, 0.25);
+}
+
+.glass-pill {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Neumorphism Utilities */
+.neu-card {
+  background-color: var(--app-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.neu-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(180, 200, 190, 0.25);
+}
+
+.neu-button {
+  background-color: var(--app-bg);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-dark);
+  font-weight: 500;
+}
+.neu-button:active {
+  box-shadow: var(--shadow-inset);
+}

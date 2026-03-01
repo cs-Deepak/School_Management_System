@@ -1,0 +1,19 @@
+--- Starting Attendance Verification ---
+
+[1] Logging in Teacher...
+Teacher logged in.
+
+[2] Fetching Classes to find a target...
+Teacher forbidden from admin route. Logging in Admin to get class data...
+Target Class: 10-A (699eeb65d3c79acd9666787f)
+Found 1 students in class.
+
+[3] Marking Attendance for Today...
+Mark Attendance Status: 201 Attendance marked successfully
+
+[4] Testing Duplicate Prevention...
+Duplicate Mark Status: 409 Attendance already marked for this class on Wed Feb 25 2026
+
+[5] Fetching Attendance Report...
+Fetch Report Status: 200 Found 1 records
+Sample Record: {"student":"Bobby","status":"Present"}

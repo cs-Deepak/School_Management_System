@@ -1,0 +1,13 @@
+.app {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--app-bg);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
+}
+
+@media (max-width: 1240px) {
+  /* No overrides needed since base is already edge-to-edge */
+}

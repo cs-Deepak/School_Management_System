@@ -1,0 +1,93 @@
+.academic-programs-section {
+  padding: 100px 24px;
+  background-color: #ffffff;
+}
+
+.programs-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.program-card {
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-main);
+  transition: all 0.4s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.program-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: var(--accent);
+  transition: height 0.3s ease;
+}
+
+.program-card:hover {
+  transform: translateY(-10px);
+  background: #ffffff;
+  box-shadow: var(--shadow-hover);
+}
+
+.program-card:hover::before {
+  height: 10px;
+}
+
+.prog-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: rgba(30, 41, 59, 0.05);
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.prog-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.prog-age {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-hover);
+  background: var(--accent-sub);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 20px;
+}
+
+.prog-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.prog-link {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: gap 0.3s ease;
+}
+
+.prog-link:hover {
+  gap: 12px;
+  color: var(--accent-hover);
+}

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "C:\\Users\\Deepa\\Desktop\\LBS School\\backend\\logs\\.b81c6518d888ab85a1b07642019ae83401de487b-audit.json",
+    "files": [
+        {
+            "date": 1772023571575,
+            "name": "C:\\Users\\Deepa\\Desktop\\LBS School\\backend\\logs\\error-2026-02-25.log",
+            "hash": "f8326e40225502a5260119e97c68c8dd1a37cc2f6f729b7b029a86b50a5ada37"
+        }
+    ],
+    "hashType": "sha256"
+}

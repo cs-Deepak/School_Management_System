@@ -1,0 +1,412 @@
+.about-us-premium {
+  background-color: var(--bg-main);
+  overflow-x: hidden;
+}
+
+.section-padding {
+  padding: 100px 24px;
+}
+
+.bg-alt {
+  background-color: #ffffff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.center {
+  text-align: center;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--accent-hover);
+  font-size: 0.8rem;
+  font-weight: 800;
+  border-radius: var(--radius-pill);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 24px;
+}
+
+/* 1. Hero Banner */
+.about-hero {
+  height: 60vh;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 900;
+  margin: 20px 0;
+}
+
+.hero-tagline {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.badge-light {
+  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* 2. Overview */
+.overflow-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.overview-text p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+}
+
+.feat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feat-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.feat-item i {
+  color: var(--accent-hover);
+}
+
+.overview-image img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover);
+}
+
+/* 3. Ideology Card */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.ideology-card {
+  padding: 50px 40px;
+  background: var(--bg-main);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  transition: transform 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.ideology-card:hover {
+  transform: translateY(-10px);
+}
+
+.highlight-card {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.highlight-card h3 { color: #ffffff; }
+
+.card-icon {
+  font-size: 2.5rem;
+  color: var(--accent-hover);
+  margin-bottom: 24px;
+}
+
+.values-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.values-list li {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.values-list li::before {
+  content: '✓';
+  color: var(--accent-hover);
+  font-weight: 900;
+}
+
+/* 4. Leadership */
+.leadership-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.leader-card {
+  display: flex;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  gap: 30px;
+  box-shadow: var(--shadow-premium);
+  align-items: center;
+}
+
+.leader-img img {
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.leader-role {
+  color: var(--accent-hover);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.leader-content h3 {
+  margin: 10px 0;
+  color: var(--primary);
+}
+
+.leader-content p {
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* 5. Team */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.team-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-premium);
+}
+
+.team-card img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.team-card h4 {
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+/* 6. Infra */
+.infra-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+.infra-item {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+.infra-item:hover {
+  background: var(--accent);
+}
+
+.infra-item i {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+/* 7. Timeline */
+.timeline-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 0;
+  position: relative;
+}
+
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.timeline-item {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+}
+
+.time-year {
+  width: 60px;
+  height: 60px;
+  background: var(--primary);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  margin: 0 auto 20px auto;
+  border: 4px solid #ffffff;
+}
+
+/* 8. USP */
+.grid-2-center {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+}
+
+.stat-circle {
+  width: 250px;
+  height: 250px;
+  border: 15px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 0 auto;
+}
+
+.stat-circle span {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+/* 9. Accreditations */
+.logos-grid {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.logo-box {
+  padding: 30px 50px;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  color: var(--primary);
+  box-shadow: var(--shadow-premium);
+}
+
+/* 10. Gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform 0.4s ease;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* 11. CTA */
+.cta-box {
+  background: linear-gradient(135deg, var(--primary) 0%, #334155 100%);
+  padding: 80px;
+  border-radius: var(--radius-lg);
+  color: #ffffff;
+}
+
+.cta-box h2 {
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.btn-accent {
+  background: var(--accent);
+  padding: 16px 40px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.btn-white-outline {
+  background: transparent;
+  padding: 16px 40px;
+  border: 2px solid #ffffff;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  color: #ffffff;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+@media (max-width: 992px) {
+  .hero-title { font-size: 3rem; }
+  .overflow-grid, .grid-3, .leadership-row, .team-grid, .infra-grid, .grid-2-center, .gallery-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .leader-card { flex-direction: column; }
+  
+  .timeline-container { flex-direction: column; gap: 40px; }
+  .timeline-container::before { display: none; }
+  
+  .logos-grid { flex-direction: column; }
+}

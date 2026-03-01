@@ -1,0 +1,156 @@
+.showcase-section {
+  padding: 60px 0;
+  background-color: var(--app-bg);
+  width: 100vw;
+  overflow: hidden; /* Prevent horizontal scrollbar on body */
+  display: flex;
+  justify-content: center;
+  /* Fade-in animation on section load */
+  animation: fadeInSection 1s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInSection {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.showcase-marquee-container {
+  position: relative;
+  width: 100%;
+  max-width: 1600px; /* Allow it to be wider than the normal app container for a panoramic feel */
+  overflow: hidden;
+  padding: 20px 0; /* Room for shadows */
+  display: flex;
+}
+
+/* Cinematic fade edges */
+.marquee-fade-left,
+.marquee-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 15vw;
+  max-width: 250px;
+  z-index: 2;
+  pointer-events: none; /* Let clicks pass through */
+}
+
+.marquee-fade-left {
+  left: 0;
+  background: linear-gradient(to right, var(--app-bg) 0%, transparent 100%);
+}
+
+.marquee-fade-right {
+  right: 0;
+  background: linear-gradient(to left, var(--app-bg) 0%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  /* Animate seamlessly connecting the two duplicated lists */
+  animation: scrollMarquee 45s linear infinite;
+  padding: 0 16px;
+}
+
+/* Pause animation smoothly on hover */
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - 16px)); } /* Shift exactly half the total width (+ half gap) */
+}
+
+.marquee-item {
+  width: clamp(300px, 30vw, 450px); /* Responsive sizing */
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  /* Removing generic glass-panel transitions to isolate hover effects */
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  transform: translateY(0) scale(1);
+}
+
+.marquee-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 18px; /* Slightly less than container to fit inside border */
+}
+
+.marquee-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Slight scale up initially so parallax has room to move if it had mouse tracking, here acting as a base for scale */
+  transform: scale(1.02); 
+  transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.marquee-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(43, 58, 54, 0.2) 0%, transparent 50%);
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+/* Hover Interactions */
+.marquee-item:hover {
+  transform: scale(1.02); /* Very minimal container lift */
+  box-shadow: 0 16px 40px rgba(26, 47, 42, 0.25);
+  z-index: 10;
+}
+
+.marquee-item:hover .marquee-img {
+  transform: scale(1.08); /* Slow elegant zoom inside the card */
+}
+
+.marquee-item:hover .marquee-img-overlay {
+  opacity: 0; /* Clean view on hover */
+}
+
+/* Responsive constraints for touch devices */
+@media (max-width: 768px) {
+  .showcase-section {
+    padding: 40px 0;
+  }
+  
+  .marquee-track {
+    gap: 20px;
+    animation: scrollMarqueeMobile 35s linear infinite; /* Slightly faster on mobile due to smaller screen */
+  }
+  
+  @keyframes scrollMarqueeMobile {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 10px)); }
+  }
+
+  .marquee-item {
+    width: clamp(260px, 75vw, 320px); /* Larger relative to screen for impact, but smaller absolutely */
+    aspect-ratio: 16 / 10;
+  }
+
+  .marquee-fade-left,
+  .marquee-fade-right {
+    width: 10vw; /* Smaller fades on mobile */
+  }
+
+  /* Disable hover zoom on touch devices (they just cause sticky hover states) but maintain track pause on tap/hold */
+  @media (hover: none) and (pointer: coarse) {
+    .marquee-item:hover {
+      transform: none;
+      box-shadow: var(--shadow-sm);
+    }
+    .marquee-item:hover .marquee-img {
+      transform: scale(1.02);
+    }
+  }
+}

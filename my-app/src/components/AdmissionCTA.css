@@ -1,0 +1,109 @@
+.admission-cta-section {
+  padding: 80px 24px;
+  background-color: var(--bg-main);
+}
+
+.cta-banner {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--primary) 0%, #334155 100%);
+  border-radius: var(--radius-lg);
+  padding: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  background: rgba(74, 222, 128, 0.05);
+  border-radius: 50%;
+}
+
+.cta-content {
+  max-width: 600px;
+  z-index: 2;
+}
+
+.cta-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.cta-text {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-accent {
+  background: var(--accent);
+  color: var(--primary);
+  padding: 16px 36px;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-accent:hover {
+  background: var(--accent-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+}
+
+.btn-outline-white {
+  background: transparent;
+  color: #ffffff;
+  padding: 16px 36px;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-white:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.cta-decoration {
+  font-size: 10rem;
+  color: rgba(255, 255, 255, 0.05);
+  margin-right: 40px;
+}
+
+@media (max-width: 992px) {
+  .cta-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 60px 30px;
+  }
+  
+  .cta-buttons {
+    justify-content: center;
+  }
+  
+  .cta-decoration {
+    display: none;
+  }
+}

@@ -1,0 +1,41 @@
+﻿Login successful
+
+--- Creating Subject ---
+{
+  success: false,
+  message: 'Subject with code PHY201 already exists',
+  errors: 'Error: Subject with code PHY201 already exists\n' +
+    '    at AcademicService.createSubject (C:\\Users\\Deepa\\Desktop\\LBS School\\backend\\services\\academicService.js:12:13)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async exports.createSubject (C:\\Users\\Deepa\\Desktop\\LBS School\\backend\\controllers\\academicController.js:8:21)'
+}
+Subject already exists, fetching it instead...
+
+--- Fetching Subjects ---
+Found 1 subjects
+node : Error Message: Cannot 
+read properties of undefined 
+(reading '_id')
+At line:1 char:1
++ node backend/scripts/verifyAcad
+emic.js 2>&1 | Out-File 
+-Encoding utf8 ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo          : No 
+   tSpecified: (Error Message:   
+  ...(reading '_id'):String) [   
+ ], RemoteException
+    + FullyQualifiedErrorId : Na 
+   tiveCommandError
+ 
+Stack trace: TypeError: Cannot 
+read properties of undefined 
+(reading '_id')
+    at run 
+(C:\Users\Deepa\Desktop\LBS Schoo
+l\backend\scripts\verifyAcademic.
+js:102:40)
+    at process.processTicksAndRej
+ections (node:internal/process/ta
+sk_queues:95:5)
