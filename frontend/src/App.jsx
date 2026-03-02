@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import ClassManagement from "./pages/ClassManagement";
 import StudentManagement from "./pages/StudentManagement";
+import StudentProfile from "./pages/StudentProfile";
 import TeacherManagement from "./pages/TeacherManagement";
 import Attendance from "./pages/Attendance";
 import FeeCollection from "./pages/FeeCollection";
@@ -79,6 +80,17 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <StudentManagement />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/students/:studentId"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <StudentProfile />
                   </Layout>
                 </ProtectedRoute>
               }

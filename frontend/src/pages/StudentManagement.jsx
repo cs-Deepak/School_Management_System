@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Plus,
   Search,
@@ -25,6 +26,7 @@ import { cn } from "../utils/cn";
 import api from "../services/api";
 
 const StudentManagement = () => {
+  const navigate = useNavigate();
   const { addToast } = useToast();
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -295,8 +297,18 @@ const StudentManagement = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => handleOpenModal(student)}
+                          onClick={() =>
+                            navigate(`/students/${student.studentId}`)
+                          }
                           className="p-3 text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-all"
+                          title="View Profile"
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleOpenModal(student)}
+                          className="p-3 text-emerald-600 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition-all"
+                          title="Edit Student"
                         >
                           <Edit2 size={18} />
                         </button>
@@ -306,6 +318,7 @@ const StudentManagement = () => {
                             setIsDeleteConfirmOpen(true);
                           }}
                           className="p-3 text-rose-600 bg-rose-50 rounded-xl hover:bg-rose-100 transition-all"
+                          title="Delete Record"
                         >
                           <Trash2 size={18} />
                         </button>
@@ -420,8 +433,18 @@ const StudentManagement = () => {
                         <td className="px-10 py-6 text-right">
                           <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
                             <button
-                              onClick={() => handleOpenModal(student)}
+                              onClick={() =>
+                                navigate(`/students/${student.studentId}`)
+                              }
                               className="p-3 text-gray-400 hover:text-indigo-600 hover:bg-white rounded-2xl shadow-sm transition-all border border-transparent hover:border-gray-100"
+                              title="View Profile"
+                            >
+                              <Eye size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleOpenModal(student)}
+                              className="p-3 text-gray-400 hover:text-emerald-600 hover:bg-white rounded-2xl shadow-sm transition-all border border-transparent hover:border-gray-100"
+                              title="Edit Student"
                             >
                               <Edit2 size={18} />
                             </button>
@@ -431,6 +454,7 @@ const StudentManagement = () => {
                                 setIsDeleteConfirmOpen(true);
                               }}
                               className="p-3 text-gray-400 hover:text-rose-600 hover:bg-white rounded-2xl shadow-sm transition-all border border-transparent hover:border-gray-100"
+                              title="Delete Record"
                             >
                               <Trash2 size={18} />
                             </button>

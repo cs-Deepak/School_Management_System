@@ -6,13 +6,20 @@
 
 const express = require('express');
 const router = express.Router();
-const { getFeeDetails, recordPayment, downloadReceipt } = require('../controllers/feeController');
+const { 
+  getFeeDetails, 
+  recordPayment, 
+  downloadReceipt,
+  getStudentFeesByMonth 
+} = require('../controllers/feeController');
 const { protect, isAdmin } = require('../middleware/auth');
 
 // Protect all routes
 router.use(protect);
 
-// Allow staff/admin for inquiry? Let's keep it specific but add receipt access
+// GET /api/fees/student/:studentId → Month-wise fee status
+router.get('/student/:studentId', getStudentFeesByMonth);
+
 router.get('/receipt/:transactionId', downloadReceipt);
 
 router.use(isAdmin); // Restrict to admin role for direct financial edits

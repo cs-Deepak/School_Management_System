@@ -4,6 +4,8 @@
  * Handles fee inquiries and payment recordings.
  */
 
+const Student = require('../models/Student');
+const FeeLedger = require('../models/FeeLedger');
 const feeService = require('../services/feeService');
 const { generateFeeReceipt } = require('../utils/pdfGenerator');
 const { successResponse, errorResponse } = require('../utils/apiResponse');
@@ -31,10 +33,19 @@ const getFeeDetails = async (req, res, next) => {
  */
 const recordPayment = async (req, res, next) => {
   try {
-    const { studentId, amount, type, transactionId, remarks, dueDate } = req.body;
+    const { 
+      studentId, 
+      amount, 
+      type, 
+      transactionId, 
+      remarks, 
+      dueDate,
+      month,
+      academicYear 
+    } = req.body;
 
-    if (!studentId || !amount || !type) {
-      return errorResponse(res, 'studentId, amount, and type are required', 400);
+    if (!studentId || !amount || !type || !month || !academicYear) {
+      return errorResponse(res, 'studentId, amount, type, month, and academicYear are required', 400);
     }
 
     const transaction = await feeService.processPayment(studentId, {
@@ -42,7 +53,9 @@ const recordPayment = async (req, res, next) => {
       type,
       transactionId,
       remarks,
-      dueDate
+      dueDate,
+      month,
+      academicYear
     });
 
     // Fetch student info first to get class and rollNumber
@@ -96,8 +109,60 @@ const downloadReceipt = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get month-wise fee status for a student
+ * @route   GET /api/fees/student/:studentId
+ * @access  Public (Protected by middleware)
+ */
+const getStudentFeesByMonth = async (req, res, next) => {
+  try {
+    const { studentId } = req.params;
+
+    // 1. Find the student by their unique studentId string
+    const student = await Student.findOne({ studentId });
+
+    if (!student) {
+      return errorResponse(res, 'Student not found', 404);
+    }
+
+    // 2. Find the FeeLedger for this student
+    const feeLedger = await FeeLedger.findOne({ studentId: student._id })
+      .sort({ createdAt: -1 });
+
+    if (!feeLedger) {
+      return errorResponse(res, 'No fee ledger found for this student', 404);
+    }
+
+    // 3. Construct response optimized for table UI
+    // Note: Schema ensures April -> March order in monthlyFees array
+    const response = {
+      academicYear: feeLedger.academicYear,
+      studentName: student.name,
+      studentId: student.studentId,
+      summary: {
+        totalFee: feeLedger.totalFee,
+        totalPaid: feeLedger.totalPaid,
+        pendingAmount: feeLedger.pendingAmount
+      },
+      monthlyBreakdown: feeLedger.monthlyFees.map(item => ({
+        month: item.month,
+        amount: item.amount,
+        paidAmount: item.paidAmount,
+        pending: item.amount - item.paidAmount,
+        status: item.status,
+        paidOn: item.paidOn || null
+      }))
+    };
+
+    return successResponse(res, response, 'Student fees fetched successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getFeeDetails,
   recordPayment,
   downloadReceipt,
+  getStudentFeesByMonth,
 };

@@ -113,18 +113,7 @@ const AdminDashboard = () => {
             Welcome back! Here's a summary of the school's performance.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {quickActions.map((action) => (
-            <Button
-              key={action.label}
-              variant={action.variant}
-              icon={action.icon}
-              className="rounded-2xl shadow-sm"
-            >
-              {action.label}
-            </Button>
-          ))}
-        </div>
+       
       </div>
 
       {/* Stats Cards Grid */}

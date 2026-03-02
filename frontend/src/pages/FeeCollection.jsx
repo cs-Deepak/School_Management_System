@@ -34,6 +34,8 @@ const FeeCollection = () => {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [transaction, setTransaction] = useState(null);
   const [currentStep, setCurrentStep] = useState("selector"); // selector, profile, payment
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [academicYear, setAcademicYear] = useState("2025-26");
 
   // Fetch classes on mount
   useEffect(() => {
@@ -62,7 +64,7 @@ const FeeCollection = () => {
       // Backend expects /api/fees/:classId/:rollNumber
       const res = await api.get(`/fees/${selectedClass}/${searchQuery}`);
       if (res.data.success) {
-        const { student, feeSummary } = res.data.data;
+        const { student, feeSummary, ledger } = res.data.data;
         setStudent({
           id: student.id,
           name: student.fullName,
@@ -71,7 +73,18 @@ const FeeCollection = () => {
           paidFee: feeSummary.paidFee,
           dueFee: feeSummary.dueFee,
           class: student.class,
+          ledger: ledger,
         });
+
+        // Auto-select first unpaid month
+        const firstUnpaid = ledger?.monthlyBreakdown.find(
+          (m) => m.status !== "PAID",
+        );
+        if (firstUnpaid) {
+          setSelectedMonth(firstUnpaid.month);
+          setAmount(firstUnpaid.pending.toString());
+        }
+
         addToast("Student record accessed", "success");
         setCurrentStep("profile");
       }
@@ -94,9 +107,11 @@ const FeeCollection = () => {
         amount: parseFloat(amount),
         type: "Tuition",
         paymentMode: paymentMode,
+        month: selectedMonth,
+        academicYear: academicYear,
         transactionId:
           "TXN-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-        remarks: "Fee paid via ERP terminal",
+        remarks: `Fee paid for ${selectedMonth} via ERP terminal`,
       });
 
       if (res.data.success) {
@@ -363,20 +378,59 @@ const FeeCollection = () => {
               <form onSubmit={handlePayment} className="space-y-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div className="space-y-4">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                      Select Payment Month
+                    </label>
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {student.ledger?.monthlyBreakdown.map((m) => (
+                        <button
+                          key={m.month}
+                          type="button"
+                          onClick={() => {
+                            setSelectedMonth(m.month);
+                            setAmount(m.pending.toString());
+                          }}
+                          disabled={m.status === "PAID"}
+                          className={cn(
+                            "py-2 px-1 rounded-xl text-[9px] font-black uppercase transition-all border",
+                            selectedMonth === m.month
+                              ? "bg-indigo-600 border-indigo-600 text-white shadow-md scale-105"
+                              : m.status === "PAID"
+                                ? "bg-emerald-50 border-emerald-100 text-emerald-500 opacity-50 cursor-not-allowed"
+                                : "bg-gray-50 border-transparent text-gray-500 hover:border-indigo-100",
+                          )}
+                        >
+                          {m.month.substring(0, 3)}
+                          {m.status === "PAID" && " ✓"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
                     <Input
-                      label="Transaction Amount (₹)"
+                      label={`Amount for ${selectedMonth} (₹)`}
                       type="number"
                       placeholder="0.00"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
-                      max={student.dueFee}
+                      max={
+                        student.ledger?.monthlyBreakdown.find(
+                          (m) => m.month === selectedMonth,
+                        )?.pending || student.dueFee
+                      }
                       required
                       className="h-16 text-2xl font-black tracking-tighter rounded-3xl"
                     />
                     <div className="flex items-center gap-2 px-1">
                       <AlertCircle size={14} className="text-rose-400" />
                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        Max Allowed: {formatToINR(student.dueFee)}
+                        Pending for {selectedMonth}:{" "}
+                        {formatToINR(
+                          student.ledger?.monthlyBreakdown.find(
+                            (m) => m.month === selectedMonth,
+                          )?.pending || 0,
+                        )}
                       </p>
                     </div>
                   </div>

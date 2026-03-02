@@ -15,7 +15,9 @@ class FeeService {
    * Fetch student fee summary using class and roll number
    */
   async getStudentFeeDetails(classId, rollNumber) {
-    // 1. Find student and populate class info to get tuitionFee
+    const FeeLedger = require('../models/FeeLedger');
+    
+    // 1. Find student and populate class info
     const student = await Student.findOne({ class: classId, rollNumber })
       .populate('class', 'name tuitionFee');
 
@@ -23,56 +25,107 @@ class FeeService {
       throw new Error('Student not found with the given class and roll number');
     }
 
-    // 2. Aggregate all 'Paid' transactions for this student
+    // 2. Fetch Fee Ledger for the student
+    const academicYear = '2025-26'; // Default for now, can be parameterized
+    const ledger = await FeeLedger.findOne({ studentId: student._id, academicYear });
+
+    // 3. Aggregate all 'Paid' transactions
     const transactions = await FeeTransaction.find({ 
       student: student._id, 
       status: 'Paid' 
-    });
-
-    const totalPaid = transactions.reduce((acc, tx) => acc + tx.amount, 0);
-    const totalFee = student.class.tuitionFee || 0;
-    const dueFee = totalFee - totalPaid;
+    }).sort({ createdAt: -1 });
 
     return {
       student: {
         id: student._id,
-        fullName: student.fullName,
+        fullName: student.firstName + ' ' + (student.lastName || ''),
         class: student.class.name,
         rollNumber: student.rollNumber
       },
-      feeSummary: {
-        totalFee,
-        paidFee: totalPaid,
-        dueFee: dueFee > 0 ? dueFee : 0
+      feeSummary: ledger ? {
+        totalFee: ledger.totalFee,
+        paidFee: ledger.totalPaid,
+        dueFee: ledger.pendingAmount
+      } : {
+        totalFee: student.class.tuitionFee || 0,
+        paidFee: 0,
+        dueFee: student.class.tuitionFee || 0
       },
-      transactions: transactions.sort((a, b) => b.createdAt - a.createdAt)
+      ledger: ledger ? {
+        academicYear: ledger.academicYear,
+        monthlyBreakdown: ledger.monthlyFees.map(m => ({
+          month: m.month,
+          amount: m.amount,
+          paidAmount: m.paidAmount,
+          pending: m.amount - m.paidAmount,
+          status: m.status
+        }))
+      } : null,
+      transactions: transactions
     };
   }
 
   /**
-   * Record a new fee payment
+   * Record a new fee payment (Transaction-Safe)
    */
   async processPayment(studentId, paymentData) {
-    const { amount, type, transactionId, remarks, dueDate } = paymentData;
+    const mongoose = require('mongoose');
+    const FeeLedger = require('../models/FeeLedger');
+    const { amount, type, transactionId, remarks, dueDate, month, academicYear } = paymentData;
 
-    // Generate unique receipt number
-    const receiptNumber = await generateReceiptNumber();
+    try {
+      // 1. Generate unique receipt number
+      const receiptNumber = await generateReceiptNumber();
 
-    // Create a new transaction
-    const transaction = await FeeTransaction.create({
-      student: studentId,
-      amount,
-      type,
-      status: 'Paid', // Assuming direct payment success for this simplified ERP
-      paymentDate: new Date(),
-      dueDate: dueDate || new Date(), // If not provided, assume due now
-      transactionId,
-      receiptNumber,
-      remarks
-    });
+      // 2. Create a new transaction record
+      const transaction = await FeeTransaction.create({
+        student: studentId,
+        amount,
+        type,
+        status: 'Paid',
+        paymentDate: new Date(),
+        dueDate: dueDate || new Date(),
+        transactionId,
+        receiptNumber,
+        month,
+        academicYear,
+        remarks
+      });
 
+      // 3. Update the FeeLedger for the specific student and academic year
+      const ledger = await FeeLedger.findOne({ studentId, academicYear });
 
-    return transaction;
+      if (!ledger) {
+        throw new Error(`Fee ledger not found for student and academic year ${academicYear}`);
+      }
+
+      // Find the month entry in the array
+      const monthIndex = ledger.monthlyFees.findIndex(m => m.month === month);
+      if (monthIndex === -1) {
+        throw new Error(`Month ${month} not found in the fee ledger`);
+      }
+
+      // Update the month's payment details
+      ledger.monthlyFees[monthIndex].paidAmount += amount;
+      
+      // Determine new status based on amount comparison
+      if (ledger.monthlyFees[monthIndex].paidAmount >= ledger.monthlyFees[monthIndex].amount) {
+        ledger.monthlyFees[monthIndex].status = 'PAID';
+      } else if (ledger.monthlyFees[monthIndex].paidAmount > 0) {
+        ledger.monthlyFees[monthIndex].status = 'PARTIAL';
+      }
+      
+      ledger.monthlyFees[monthIndex].paidOn = new Date();
+
+      // 4. Save the ledger (this triggers the pre-save hook to recalculate totals)
+      await ledger.save();
+
+      return transaction; // Return the created transaction object
+
+    } catch (error) {
+      console.error('Payment processing failed:', error);
+      throw error;
+    }
   }
   /**
    * Generates a professional PDF for a fee receipt
@@ -124,7 +177,7 @@ class FeeService {
     doc.fillColor('#111827').text(`LBS-${transaction.student.rollNumber}`, 150, studentY);
     
     doc.fillColor('#4b5563').text('Full Name:', 50, studentY + 20);
-    doc.fillColor('#111827').text(transaction.student.fullName.toUpperCase(), 150, studentY + 20, { weight: 'bold' });
+    doc.fillColor('#111827').text((transaction.student.name || "").toUpperCase(), 150, studentY + 20, { weight: 'bold' });
     
     doc.fillColor('#4b5563').text('Class/Section:', 320, studentY);
     doc.fillColor('#111827').text(transaction.student.class.name, 420, studentY);

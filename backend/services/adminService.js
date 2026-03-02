@@ -140,7 +140,7 @@ class AdminService {
 
       report.push({
         studentId: student._id,
-        name: `${student.firstName} ${student.lastName}`,
+        name: student.name,
         rollNo: student.rollNumber,
         presentCount,
         absentCount,
@@ -172,9 +172,9 @@ class AdminService {
 
     return {
       studentDetails: {
-        name: `${student.firstName} ${student.lastName}`,
+        name: student.name,
         rollNo: student.rollNumber,
-        className: student.class.name,
+        className: student.class ? student.class.name : 'N/A',
       },
       summary: {
         totalClasses,
@@ -245,7 +245,7 @@ class AdminService {
 
     return {
       studentInfo: {
-        name: `${student.firstName} ${student.lastName}`,
+        name: student.name,
         rollNo: student.rollNumber,
         className: student.class ? student.class.name : 'N/A',
         program: 'Regular'

@@ -50,6 +50,14 @@ const feeTransactionSchema = new mongoose.Schema(
       sparse: true, // Generated only on successful payment
     },
 
+    month: {
+      type: String,
+      required: [true, 'Month name is required'],
+    },
+    academicYear: {
+      type: String,
+      required: [true, 'Academic year is required'],
+    },
     remarks: {
       type: String,
       trim: true,

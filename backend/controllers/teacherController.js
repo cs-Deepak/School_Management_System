@@ -66,17 +66,43 @@ const getTeacherById = async (req, res, next) => {
 };
 
 /**
- * @desc    Create a new teacher
+ * @desc    Create a new teacher (supports single & bulk)
  * @route   POST /api/teachers
  * @access  Public
  */
 const createTeacher = async (req, res, next) => {
   try {
-    console.log('TeacherController: Creating teacher:', JSON.stringify(req.body, null, 2));
-    const teacher = await Teacher.create(req.body);
+    const data = req.body;
+
+    // 🔹 BULK INSERT SUPPORT
+    if (Array.isArray(data)) {
+      if (!data.length) {
+        return errorResponse(res, "Teacher array is empty", 400);
+      }
+
+      for (const teacher of data) {
+        if (!teacher.user) {
+          return errorResponse(res, "Missing user in one of the teacher records", 400);
+        }
+      }
+
+      const teachers = await Teacher.insertMany(data);
+      return successResponse(res, {
+        teachers,
+        count: teachers.length
+      }, 'Teachers added successfully', 201);
+    }
+
+    // 🔹 SINGLE INSERT SUPPORT
+    if (!data.user) {
+      return errorResponse(res, "Missing user or teacher data", 400);
+    }
+
+    const teacher = await Teacher.create(data);
     return successResponse(res, teacher, 'Teacher created successfully', 201);
+
   } catch (error) {
-    console.error('TeacherController: Error creating teacher:', error);
+    console.error("Create teacher error:", error);
     next(error);
   }
 };
@@ -133,3 +159,7 @@ module.exports = {
   updateTeacher,
   deleteTeacher,
 };
+
+
+
+

@@ -6,6 +6,7 @@
  */
 
 const Student = require('../models/Student');
+const FeeLedger = require('../models/FeeLedger');
 const { successResponse, errorResponse } = require('../utils/apiResponse');
 
 /**
@@ -125,9 +126,69 @@ const deleteStudent = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get a student's full profile (including fee summary)
+ * @route   GET /api/students/:studentId/profile
+ * @access  Public
+ */
+const getStudentProfile = async (req, res, next) => {
+  try {
+    const { studentId } = req.params;
+
+    // 1. Fetch Student details with Class information
+    const student = await Student.findOne({ studentId }).populate('class');
+
+    if (!student) {
+      return errorResponse(res, 'Student not found', 404);
+    }
+
+    // 2. Fetch the latest FeeLedger for the student
+    const feeLedger = await FeeLedger.findOne({ studentId: student._id })
+      .sort({ createdAt: -1 });
+
+    // 3. Construct clean, frontend-ready JSON
+    const response = {
+      personalDetails: {
+        name: student.name,
+        studentId: student.studentId,
+        rollNumber: student.rollNumber,
+        admissionDate: student.admissionDate,
+        status: student.status,
+      },
+      academicDetails: {
+        className: student.class ? student.class.name : 'N/A',
+        section: student.section,
+      },
+      contactDetails: {
+        address: student.address,
+        parentName: student.parentName,
+        parentMobile: student.parentPhone,
+      },
+      feeSummary: feeLedger ? {
+        academicYear: feeLedger.academicYear,
+        totalFee: feeLedger.totalFee,
+        totalPaid: feeLedger.totalPaid,
+        pendingAmount: feeLedger.pendingAmount,
+        monthlyFees: feeLedger.monthlyFees,
+      } : {
+        message: 'No fee record found for this academic year',
+        totalFee: 0,
+        totalPaid: 0,
+        pendingAmount: 0,
+        monthlyFees: [],
+      }
+    };
+
+    return successResponse(res, response, 'Student profile fetched successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllStudents,
   getStudentById,
+  getStudentProfile,
   createStudent,
   updateStudent,
   deleteStudent,

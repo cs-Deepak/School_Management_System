@@ -1,52 +1,48 @@
-/**
- * Student Model
- * 
- * Represents a student in the School ERP system.
- */
-
 const mongoose = require('mongoose');
+const Counter = require('./Counter');
 
 const studentSchema = new mongoose.Schema(
   {
+    studentId: {
+      type: String,
+      unique: true,
+      trim: true,
+      index: true,
+    },
     firstName: {
       type: String,
       required: [true, 'First name is required'],
       trim: true,
-      maxlength: [50, 'First name cannot exceed 50 characters'],
     },
     lastName: {
       type: String,
       required: [true, 'Last name is required'],
       trim: true,
-      maxlength: [50, 'Last name cannot exceed 50 characters'],
     },
-    email: {
+    rollNumber: {
       type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      lowercase: true,
+      required: [true, 'Roll number is required'],
       trim: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
-    },
-    grade: {
-      type: String,
-      required: [true, 'Grade is required'],
-      trim: true,
-    },
-    section: {
-      type: String,
-      trim: true,
-      default: 'A',
+      index: true,
     },
     class: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Class',
       required: [true, 'Student must be assigned to a class'],
+      index: true,
     },
-    rollNumber: {
-
+    grade: {
       type: String,
-      required: [true, 'Roll number is required'],
+      trim: true,
+    },
+    section: {
+      type: String,
+      required: [true, 'Section is required'],
+      trim: true,
+      default: 'A',
+    },
+    address: {
+      type: String,
       trim: true,
     },
     parentName: {
@@ -58,36 +54,57 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Parent phone number is required'],
       trim: true,
-      match: [/^\d{10}$/, 'Phone number must be 10 digits'],
     },
-    address: {
+    email: {
       type: String,
       trim: true,
-    },
-    dateOfBirth: {
-      type: Date,
+      lowercase: true,
     },
     admissionDate: {
       type: Date,
       default: Date.now,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
+    status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+      index: true,
     },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
 // Virtual for full name
-studentSchema.virtual('fullName').get(function () {
+studentSchema.virtual('name').get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Ensure virtuals are included in JSON output
-studentSchema.set('toJSON', { virtuals: true });
-studentSchema.set('toObject', { virtuals: true });
+// Pre-save hook for auto-generating studentId
+studentSchema.pre('save', async function (next) {
+  if (!this.studentId) {
+    try {
+      const counter = await Counter.findOneAndUpdate(
+        { name: 'studentId' },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      );
+
+      const year = new Date().getFullYear();
+      const sequence = counter.seq.toString().padStart(4, '0');
+      this.studentId = `STU-${year}-${sequence}`;
+    } catch (error) {
+      return next(error);
+    }
+  }
+  next();
+});
+
+// Compound index for unique roll number within a class and section
+studentSchema.index({ class: 1, section: 1, rollNumber: 1 }, { unique: true });
 
 module.exports = mongoose.model('Student', studentSchema);
+
