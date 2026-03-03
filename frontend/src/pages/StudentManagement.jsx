@@ -58,6 +58,7 @@ const StudentManagement = () => {
       const res = await api.get("/students", {
         params: {
           isActive: "true",
+          limit: 1000,
         },
       });
       if (res.data.success) {

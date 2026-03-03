@@ -22,7 +22,9 @@ const getAllStudents = async (req, res, next) => {
     const filter = {};
     if (grade) filter.grade = grade;
     if (section) filter.section = section;
-    if (isActive !== undefined) filter.isActive = isActive === 'true';
+    if (isActive !== undefined) {
+      filter.status = isActive === 'true' ? 'active' : 'inactive';
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 

@@ -84,23 +84,18 @@ studentSchema.virtual('name').get(function () {
 });
 
 // Pre-save hook for auto-generating studentId
-studentSchema.pre('save', async function (next) {
+studentSchema.pre('save', async function () {
   if (!this.studentId) {
-    try {
-      const counter = await Counter.findOneAndUpdate(
-        { name: 'studentId' },
-        { $inc: { seq: 1 } },
-        { new: true, upsert: true }
-      );
+    const counter = await Counter.findOneAndUpdate(
+      { name: 'studentId' },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
 
-      const year = new Date().getFullYear();
-      const sequence = counter.seq.toString().padStart(4, '0');
-      this.studentId = `STU-${year}-${sequence}`;
-    } catch (error) {
-      return next(error);
-    }
+    const year = new Date().getFullYear();
+    const sequence = counter.seq.toString().padStart(4, '0');
+    this.studentId = `STU-${year}-${sequence}`;
   }
-  next();
 });
 
 // Compound index for unique roll number within a class and section

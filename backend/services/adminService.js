@@ -258,6 +258,41 @@ class AdminService {
       }
     };
   }
+
+  /**
+   * Get dynamic summary for a specific class (total students, fee stats)
+   */
+  async getClassSummary(classId) {
+    const targetClass = await Class.findById(classId);
+    if (!targetClass) throw new Error('Class not found');
+
+    const students = await Student.find({ class: classId });
+    const studentIds = students.map(s => s._id);
+    const studentCount = students.length;
+
+    const FeeLedger = require('../models/FeeLedger');
+    const ledgers = await FeeLedger.find({ studentId: { $in: studentIds } });
+
+    const totalPaid = ledgers.reduce((acc, curr) => acc + (curr.totalPaid || 0), 0);
+    
+    // Calculate total expected: use ledger totalFee if exists, otherwise class tuitionFee
+    let totalExpected = 0;
+    const ledgerMap = new Map();
+    ledgers.forEach(l => ledgerMap.set(l.studentId.toString(), l.totalFee));
+
+    students.forEach(s => {
+      const studentLedgerFee = ledgerMap.get(s._id.toString());
+      totalExpected += (studentLedgerFee !== undefined) ? studentLedgerFee : (targetClass.tuitionFee || 0);
+    });
+
+    return {
+      className: targetClass.name,
+      studentCount,
+      totalExpected,
+      totalCollected: totalPaid,
+      totalPending: totalExpected - totalPaid
+    };
+  }
 }
 
 module.exports = new AdminService();

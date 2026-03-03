@@ -158,6 +158,19 @@ const getDashboardStats = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get dynamic summary for a specific class
+ * @route   GET /api/admin/classes/:id/summary
+ */
+const getClassSummary = async (req, res, next) => {
+  try {
+    const summary = await adminService.getClassSummary(req.params.id);
+    return successResponse(res, summary, 'Class summary fetched successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createClass,
   updateClass,
@@ -166,6 +179,7 @@ module.exports = {
   createStudent,
   getStudentsByClass,
   getAllClasses,
+  getClassSummary,
   getClassAttendanceReport,
   getStudentAttendanceReport,
   getStudentAttendanceAnalysis,

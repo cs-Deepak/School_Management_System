@@ -105,6 +105,11 @@ class FeeService {
         throw new Error(`Month ${month} not found in the fee ledger`);
       }
 
+      // Check if already paid to prevent duplicate charges
+      if (ledger.monthlyFees[monthIndex].status === 'PAID') {
+        throw new Error(`Fee for ${month} is already fully paid`);
+      }
+
       // Update the month's payment details
       ledger.monthlyFees[monthIndex].paidAmount += amount;
       

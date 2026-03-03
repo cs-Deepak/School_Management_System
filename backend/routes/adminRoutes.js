@@ -14,6 +14,7 @@ const {
   createStudent, 
   getStudentsByClass, 
   getAllClasses,
+  getClassSummary,
   getClassAttendanceReport,
   getStudentAttendanceReport,
   getStudentAttendanceAnalysis,
@@ -34,6 +35,7 @@ router.get('/classes', getAllClasses);
 router.put('/classes/:id', updateClass);
 router.delete('/classes/:id', deleteClass);
 router.get('/classes/:classId/students', getStudentsByClass);
+router.get('/classes/:id/summary', getClassSummary);
 
 // Resource creation routes
 router.post('/teachers', createTeacher);
