@@ -6,6 +6,9 @@
  */
 
 const Teacher = require('../models/Teacher');
+const Class = require('../models/Class');
+const Student = require('../models/Student');
+const Attendance = require('../models/Attendance');
 const { successResponse, errorResponse } = require('../utils/apiResponse');
 
 /**
@@ -152,12 +155,65 @@ const deleteTeacher = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc    Get dashboard stats for logic-in teacher
+ * @route   GET /api/teachers/dashboard/stats
+ * @access  Private (Teacher)
+ */
+const getTeacherDashboardStats = async (req, res, next) => {
+  try {
+    const teacher = await Teacher.findOne({ user: req.user.id });
+    if (!teacher) {
+      return errorResponse(res, 'Teacher profile not found', 404);
+    }
+
+    const classes = await Class.find({ teacher: teacher._id });
+    const classIds = classes.map(c => c._id);
+    
+    // Total Students across all assigned classes
+    // Note: Class model has students array (IDs)
+    const totalStudents = classes.reduce((acc, c) => acc + (c.students ? c.students.length : 0), 0);
+
+    // Today's Attendance Summary
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const todayAttendance = await Attendance.find({
+      class: { $in: classIds },
+      date: { $gte: today, $lt: tomorrow }
+    });
+
+    const presentCount = todayAttendance.filter(a => a.status === 'Present').length;
+    const absentCount = todayAttendance.filter(a => a.status === 'Absent').length;
+
+    return successResponse(res, {
+      totalClasses: classes.length,
+      totalStudents,
+      attendanceSummary: {
+        present: presentCount,
+        absent: absentCount,
+        totalMarked: todayAttendance.length
+      },
+      assignedClasses: classes.map(c => ({
+        id: c._id,
+        name: c.name,
+        studentCount: c.students ? c.students.length : 0
+      }))
+    }, 'Teacher stats fetched successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllTeachers,
   getTeacherById,
   createTeacher,
   updateTeacher,
   deleteTeacher,
+  getTeacherDashboardStats,
 };
 
 

@@ -20,26 +20,30 @@ const {
   getStudentAttendanceAnalysis,
   getDashboardStats
 } = require('../controllers/adminController');
-const { protect, isAdmin } = require('../middleware/auth');
+const { protect, authorize, isAdmin } = require('../middleware/auth');
 
-// Apply protection and Admin check to all routes in this router
+// Apply protection to all routes
 router.use(protect);
-router.use(isAdmin);
 
-// Stats route
-router.get('/stats', getDashboardStats);
+// Admin-only routes middleware
+const adminOnly = isAdmin;
+// Shared (Admin + Teacher) routes middleware
+const sharedAccess = authorize('admin', 'teacher');
 
-// Class routes
-router.post('/classes', createClass);
-router.get('/classes', getAllClasses);
-router.put('/classes/:id', updateClass);
-router.delete('/classes/:id', deleteClass);
-router.get('/classes/:classId/students', getStudentsByClass);
-router.get('/classes/:id/summary', getClassSummary);
+// Stats route (Admin only)
+router.get('/stats', adminOnly, getDashboardStats);
+
+// Class routes (Shared access for viewing, Admin only for mutations)
+router.post('/classes', adminOnly, createClass);
+router.get('/classes', sharedAccess, getAllClasses);
+router.put('/classes/:id', adminOnly, updateClass);
+router.delete('/classes/:id', adminOnly, deleteClass);
+router.get('/classes/:classId/students', sharedAccess, getStudentsByClass);
+router.get('/classes/:id/summary', adminOnly, getClassSummary);
 
 // Resource creation routes
-router.post('/teachers', createTeacher);
-router.post('/students', createStudent);
+router.post('/teachers', adminOnly, createTeacher);
+router.post('/students', sharedAccess, createStudent); // Allow teachers to enroll students
 
 // Analytics routes
 router.get('/attendance/class/:classId', getClassAttendanceReport);

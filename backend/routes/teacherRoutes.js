@@ -12,7 +12,12 @@ const {
   createTeacher,
   updateTeacher,
   deleteTeacher,
+  getTeacherDashboardStats,
 } = require('../controllers/teacherController');
+const { protect } = require('../middleware/auth');
+
+// Dashboard stats for the current logged-in teacher
+router.get('/dashboard/stats', protect, getTeacherDashboardStats);
 
 // GET    /api/teachers        → List all teachers (supports ?subject=&isActive=&page=&limit=)
 // POST   /api/teachers        → Create a new teacher

@@ -8,15 +8,18 @@ import {
   Save,
   CheckCircle,
   Filter,
+  ChevronDown,
 } from "lucide-react";
 import Button from "../components/ui/Button";
 import Skeleton, { TableSkeleton } from "../components/ui/Skeleton";
 import EmptyState from "../components/ui/EmptyState";
 import { useToast } from "../context/ToastContext";
 import { cn } from "../utils/cn";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 const Attendance = () => {
+  const { user } = useAuth();
   const { addToast } = useToast();
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
@@ -32,11 +35,16 @@ const Attendance = () => {
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await api.get("/admin/classes");
+        const endpoint =
+          user?.role === "teacher"
+            ? "/timetable/teacher/assigned-classes"
+            : "/admin/classes";
+        const res = await api.get(endpoint);
         if (res.data.success) {
-          setClasses(res.data.data);
-          if (res.data.data.length > 0) {
-            setSelectedClass(res.data.data[0]._id);
+          const classData = res.data.data;
+          setClasses(classData);
+          if (classData.length > 0) {
+            setSelectedClass(classData[0]._id);
           }
         }
       } catch (error) {
@@ -172,17 +180,23 @@ const Attendance = () => {
               className="pl-12 pr-6 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-700 shadow-sm focus:ring-4 focus:ring-indigo-50 outline-none transition-all"
             />
           </div>
-          <select
-            value={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
-            className="px-6 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-700 shadow-sm focus:ring-4 focus:ring-indigo-50 outline-none transition-all cursor-pointer appearance-none"
-          >
-            {classes.map((cls) => (
-              <option key={cls._id} value={cls._id}>
-                Class {cls.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative group">
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              className="pl-6 pr-12 py-3.5 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-gray-700 shadow-sm focus:ring-4 focus:ring-indigo-50 outline-none transition-all cursor-pointer appearance-none"
+            >
+              {classes.map((cls) => (
+                <option key={cls._id} value={cls._id}>
+                  Class {cls.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-600 pointer-events-none transition-colors"
+              size={16}
+            />
+          </div>
           <Button
             onClick={handleSubmit}
             loading={loading}

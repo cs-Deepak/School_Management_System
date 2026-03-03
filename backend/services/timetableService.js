@@ -34,32 +34,29 @@ exports.isTeacherAssignedToClass = async (userId, classId) => {
  */
 
 exports.getTeacherAssignedClasses = async (userId) => {
+  // Find teacher first
+  const teacher = await Teacher.findOne({ user: userId });
+  if (!teacher) return [];
+
   // 1. Get classes where teacher is primary
-  const primaryClasses = await Class.find({ teacher: userId }).select('name');
+  const primaryClasses = await Class.find({ teacher: teacher._id }).select('name');
 
   // 2. Get classes from ClassSubject mappings
-  const teacher = await Teacher.findOne({ user: userId });
-  let mappingClasses = [];
-  if (teacher) {
-    const mappings = await ClassSubject.find({ teacher: teacher._id })
-      .populate('class', 'name')
-      .select('class');
-    mappingClasses = mappings.map(m => m.class).filter(c => !!c);
-  }
+  const mappings = await ClassSubject.find({ teacher: teacher._id })
+    .populate('class', 'name')
+    .select('class');
+  
+  const mappingClasses = mappings.map(m => m.class).filter(c => !!c);
 
   // Merge and remove duplicates by ID
-  const allClassIds = new Set([
-    ...primaryClasses.map(c => c._id.toString()),
-    ...mappingClasses.map(c => c._id.toString())
-  ]);
-
+  const allClassIds = new Set();
   const uniqueClasses = [];
-  const processedIds = new Set();
 
   [...primaryClasses, ...mappingClasses].forEach(cls => {
-    if (!processedIds.has(cls._id.toString()) && allClassIds.has(cls._id.toString())) {
+    const idStr = cls._id.toString();
+    if (!allClassIds.has(idStr)) {
       uniqueClasses.push({ _id: cls._id, name: cls.name });
-      processedIds.add(cls._id.toString());
+      allClassIds.add(idStr);
     }
   });
 

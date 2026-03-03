@@ -14,6 +14,7 @@ import {
   Phone,
   UserCheck,
   X,
+  ChevronDown,
 } from "lucide-react";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
@@ -23,9 +24,11 @@ import EmptyState from "../components/ui/EmptyState";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import { useToast } from "../context/ToastContext";
 import { cn } from "../utils/cn";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 const StudentManagement = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
   const [students, setStudents] = useState([]);
@@ -74,7 +77,11 @@ const StudentManagement = () => {
 
   const fetchClasses = async () => {
     try {
-      const res = await api.get("/admin/classes");
+      const endpoint =
+        user?.role === "teacher"
+          ? "/timetable/teacher/assigned-classes"
+          : "/admin/classes";
+      const res = await api.get(endpoint);
       if (res.data.success) {
         setClasses(res.data.data || []);
       }
@@ -237,7 +244,7 @@ const StudentManagement = () => {
             size={20}
           />
           <select
-            className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-3xl shadow-sm text-sm font-bold focus:ring-4 focus:ring-indigo-50 outline-none transition-all appearance-none cursor-pointer"
+            className="w-full pl-14 pr-12 py-4 bg-white border border-gray-100 rounded-3xl shadow-sm text-sm font-bold focus:ring-4 focus:ring-indigo-50 outline-none transition-all appearance-none cursor-pointer"
             value={filterClass}
             onChange={(e) => setFilterClass(e.target.value)}
           >
@@ -248,6 +255,10 @@ const StudentManagement = () => {
               </option>
             ))}
           </select>
+          <ChevronDown
+            className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-600 pointer-events-none transition-colors"
+            size={18}
+          />
         </div>
       </div>
 

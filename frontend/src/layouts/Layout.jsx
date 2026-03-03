@@ -32,9 +32,9 @@ const Layout = ({ children }) => {
     {
       id: "dashboard",
       path: "/dashboard",
-      label: "Admin Dashboard",
+      label: user.role === "admin" ? "Admin Dashboard" : "Teacher Dashboard",
       icon: LayoutDashboard,
-      roles: ["admin"],
+      roles: ["admin", "teacher"],
     },
     {
       id: "students",
