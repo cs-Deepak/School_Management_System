@@ -23,7 +23,12 @@ const getAllStudents = async (req, res, next) => {
     if (grade) filter.grade = grade;
     if (section) filter.section = section;
     if (isActive !== undefined) {
-      filter.status = isActive === 'true' ? 'active' : 'inactive';
+      if (isActive === 'true') {
+        // Show active OR students with no status field (legacy)
+        filter.status = { $ne: 'inactive' };
+      } else {
+        filter.status = 'inactive';
+      }
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
