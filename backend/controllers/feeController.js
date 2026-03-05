@@ -44,8 +44,18 @@ const recordPayment = async (req, res, next) => {
       academicYear 
     } = req.body;
 
-    if (!studentId || !amount || !type || !month || !academicYear) {
-      return errorResponse(res, 'studentId, amount, type, month, and academicYear are required', 400);
+    // Log request for debugging
+    logger.info(`Payment Request: ${JSON.stringify(req.body)}`);
+
+    const missingFields = [];
+    if (!studentId) missingFields.push('studentId');
+    if (!amount) missingFields.push('amount');
+    if (!type) missingFields.push('type');
+    if (!month) missingFields.push('month');
+    if (!academicYear) missingFields.push('academicYear');
+
+    if (missingFields.length > 0) {
+      return errorResponse(res, `Missing required fields: ${missingFields.join(', ')}`, 400);
     }
 
     const transaction = await feeService.processPayment(studentId, {
