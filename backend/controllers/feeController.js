@@ -7,6 +7,7 @@
 const Student = require('../models/Student');
 const FeeLedger = require('../models/FeeLedger');
 const feeService = require('../services/feeService');
+const logger = require('../utils/logger');
 const { generateFeeReceipt } = require('../utils/pdfGenerator');
 const { successResponse, errorResponse } = require('../utils/apiResponse');
 
