@@ -310,7 +310,9 @@ const StudentManagement = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() =>
-                            navigate(`/students/${student.studentId}`)
+                            navigate(
+                              `/students/${student.studentId || student._id}`,
+                            )
                           }
                           className="p-3 text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-all"
                           title="View Profile"
@@ -446,7 +448,9 @@ const StudentManagement = () => {
                           <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
                             <button
                               onClick={() =>
-                                navigate(`/students/${student.studentId}`)
+                                navigate(
+                                  `/students/${student.studentId || student._id}`,
+                                )
                               }
                               className="p-3 text-gray-400 hover:text-indigo-600 hover:bg-white rounded-2xl shadow-sm transition-all border border-transparent hover:border-gray-100"
                               title="View Profile"

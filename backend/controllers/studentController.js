@@ -143,7 +143,13 @@ const getStudentProfile = async (req, res, next) => {
     const { studentId } = req.params;
 
     // 1. Fetch Student details with Class information
-    const student = await Student.findOne({ studentId }).populate('class');
+    // Support both custom studentId (e.g., STU-2026-0001) and MongoDB _id as fallback
+    let student = await Student.findOne({ studentId }).populate('class');
+    
+    // Fallback to searching by MongoDB _id if not found by studentId
+    if (!student && /^[0-9a-fA-F]{24}$/.test(studentId)) {
+      student = await Student.findById(studentId).populate('class');
+    }
 
     if (!student) {
       return errorResponse(res, 'Student not found', 404);
