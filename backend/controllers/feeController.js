@@ -42,7 +42,8 @@ const recordPayment = async (req, res, next) => {
       remarks, 
       dueDate,
       month,
-      academicYear 
+      academicYear,
+      paymentMode
     } = req.body;
 
     // Log request for debugging
@@ -66,7 +67,8 @@ const recordPayment = async (req, res, next) => {
       remarks,
       dueDate,
       month,
-      academicYear
+      academicYear,
+      paymentMode
     });
 
     // Fetch student info first to get class and rollNumber
@@ -86,8 +88,7 @@ const recordPayment = async (req, res, next) => {
       class: student.class.name,
       rollNumber: student.rollNumber,
       paidAmount: transaction.amount,
-      dueAmount: studentFeeDetails.feeSummary.dueFee,
-      paymentMode: 'Online/Manual'
+      paymentMode: paymentMode || transaction.paymentMode || 'CASH'
     };
 
     const pdfResult = await generateFeeReceipt(receiptData);

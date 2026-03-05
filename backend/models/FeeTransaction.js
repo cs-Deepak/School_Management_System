@@ -62,6 +62,10 @@ const feeTransactionSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    paymentMode: {
+      type: String,
+      default: 'CASH'
+    },
   },
   {
     timestamps: true,

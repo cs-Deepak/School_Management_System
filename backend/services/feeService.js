@@ -108,7 +108,7 @@ class FeeService {
   async processPayment(studentId, paymentData) {
     const mongoose = require('mongoose');
     const FeeLedger = require('../models/FeeLedger');
-    const { amount, type, transactionId, remarks, dueDate, month, academicYear } = paymentData;
+    const { amount, type, transactionId, remarks, dueDate, month, academicYear, paymentMode } = paymentData;
 
     try {
       // 1. Generate unique receipt number
@@ -126,7 +126,8 @@ class FeeService {
         receiptNumber,
         month,
         academicYear,
-        remarks
+        remarks,
+        paymentMode
       });
 
       // 3. Update the FeeLedger (ensure it exists)
@@ -221,7 +222,7 @@ class FeeService {
     doc.fillColor('#111827').text(transaction.student.class.name, 420, studentY);
     
     doc.fillColor('#4b5563').text('Payment Mode:', 320, studentY + 20);
-    doc.fillColor('#111827').text(transaction.type === 'Tuition' ? 'ONLINE/CASH' : transaction.type, 420, studentY + 20);
+    doc.fillColor('#111827').text(transaction.paymentMode || 'ONLINE/CASH', 420, studentY + 20);
 
     doc.moveDown(3);
 
