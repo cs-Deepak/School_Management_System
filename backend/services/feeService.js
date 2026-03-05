@@ -12,6 +12,39 @@ const { generateReceiptNumber } = require('../utils/receiptGenerator');
 class FeeService {
 
   /**
+   * Helper: Ensure a student has a fee ledger for the given academic year.
+   * Creates one if it doesn't exist.
+   */
+  async ensureFeeLedger(studentId, academicYear, tuitionFee = 0) {
+    const FeeLedger = require('../models/FeeLedger');
+    let ledger = await FeeLedger.findOne({ studentId, academicYear });
+
+    if (!ledger) {
+      const months = [
+        'April', 'May', 'June', 'July', 'August', 'September',
+        'October', 'November', 'December', 'January', 'February', 'March'
+      ];
+
+      const monthlyFees = months.map(m => ({
+        month: m,
+        amount: tuitionFee,
+        paidAmount: 0,
+        status: 'UNPAID'
+      }));
+
+      ledger = await FeeLedger.create({
+        studentId,
+        academicYear,
+        monthlyFees,
+        totalFee: tuitionFee * 12,
+        totalPaid: 0,
+        pendingAmount: tuitionFee * 12
+      });
+    }
+    return ledger;
+  }
+
+  /**
    * Fetch student fee summary using class and roll number
    */
   async getStudentFeeDetails(classId, rollNumber) {
@@ -25,9 +58,13 @@ class FeeService {
       throw new Error('Student not found with the given class and roll number');
     }
 
-    // 2. Fetch Fee Ledger for the student
-    const academicYear = '2025-26'; // Default for now, can be parameterized
-    const ledger = await FeeLedger.findOne({ studentId: student._id, academicYear });
+    // 2. Fetch or initialize Fee Ledger for the student
+    const academicYear = '2025-26'; 
+    const ledger = await this.ensureFeeLedger(
+      student._id, 
+      academicYear, 
+      student.class.tuitionFee || 0
+    );
 
     // 3. Aggregate all 'Paid' transactions
     const transactions = await FeeTransaction.find({ 
@@ -92,12 +129,8 @@ class FeeService {
         remarks
       });
 
-      // 3. Update the FeeLedger for the specific student and academic year
-      const ledger = await FeeLedger.findOne({ studentId, academicYear });
-
-      if (!ledger) {
-        throw new Error(`Fee ledger not found for student and academic year ${academicYear}`);
-      }
+      // 3. Update the FeeLedger (ensure it exists)
+      const ledger = await this.ensureFeeLedger(studentId, academicYear);
 
       // Find the month entry in the array
       const monthIndex = ledger.monthlyFees.findIndex(m => m.month === month);

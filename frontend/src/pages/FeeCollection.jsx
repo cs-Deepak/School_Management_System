@@ -127,6 +127,11 @@ const FeeCollection = () => {
     if (e) e.preventDefault();
     if (!amount || amount <= 0) return;
 
+    if (!selectedMonth) {
+      addToast("Please select a month to pay", "error");
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await api.post("/fees/pay", {
@@ -137,7 +142,7 @@ const FeeCollection = () => {
         month: selectedMonth,
         academicYear: academicYear,
         transactionId:
-          "TXN-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
+          "TXN-" + Math.random().toString(36).substring(2, 9).toUpperCase(),
         remarks: `Fee paid for ${selectedMonth} via Finance Portal`,
       });
 
@@ -448,7 +453,7 @@ const FeeCollection = () => {
                         Months Due:
                       </span>
                       <span className="text-sm font-bold text-gray-900">
-                        {student.ledger?.monthlyBreakdown
+                        {(student.ledger?.monthlyBreakdown || [])
                           .filter((m) => m.status !== "PAID")
                           .map((m) => m.month.substring(0, 3))
                           .join(", ") || "None"}
@@ -485,7 +490,7 @@ const FeeCollection = () => {
                         Select Payment Month
                       </label>
                       <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                        {student.ledger?.monthlyBreakdown.map((m) => (
+                        {(student.ledger?.monthlyBreakdown || []).map((m) => (
                           <button
                             key={m.month}
                             type="button"
