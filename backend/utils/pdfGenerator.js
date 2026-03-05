@@ -91,12 +91,12 @@ const generateFeeReceipt = async (data) => {
        .stroke();
 
     doc.text('Current Payment', 50, tableTop + 60)
-       .text(paidAmount.toFixed(2), 400, tableTop + 60, { align: 'right' });
+       .text((paidAmount || 0).toFixed(2), 400, tableTop + 60, { align: 'right' });
 
     doc.fontSize(12)
        .fillColor('#ff0000')
        .text('DUE AMOUNT', 50, tableTop + 90)
-       .text(dueAmount.toFixed(2), 400, tableTop + 90, { align: 'right' });
+       .text((dueAmount || 0).toFixed(2), 400, tableTop + 90, { align: 'right' });
 
     // --- Footer ---
     doc.fillColor('#444444')

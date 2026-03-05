@@ -27,7 +27,7 @@ import TeacherTimetableView from "./pages/TeacherTimetableView";
 
 // Protected Route Wrapper
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
   if (loading)
@@ -39,6 +39,10 @@ const ProtectedRoute = ({ children }) => {
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;
@@ -77,7 +81,7 @@ function App() {
             <Route
               path="/students"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={["admin"]}>
                   <Layout>
                     <StudentManagement />
                   </Layout>
@@ -88,7 +92,7 @@ function App() {
             <Route
               path="/students/:studentId"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={["admin"]}>
                   <Layout>
                     <StudentProfile />
                   </Layout>

@@ -88,6 +88,7 @@ const recordPayment = async (req, res, next) => {
       class: student.class.name,
       rollNumber: student.rollNumber,
       paidAmount: transaction.amount,
+      dueAmount: studentFeeDetails.feeSummary.dueFee,
       paymentMode: paymentMode || transaction.paymentMode || 'CASH'
     };
 
